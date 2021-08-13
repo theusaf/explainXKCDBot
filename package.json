@@ -1,0 +1,33 @@
+{
+  "name": "explainxkcdbot",
+  "version": "1.0.0",
+  "description": "a bot for explainxkcd",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "engines": {
+    "node": ">= 14.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/theusaf/explainXKCDBot.git"
+  },
+  "keywords": [
+    "xkcd",
+    "explainxkcd",
+    "bot"
+  ],
+  "author": "theusaf",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/theusaf/explainXKCDBot/issues"
+  },
+  "homepage": "https://github.com/theusaf/explainXKCDBot#readme",
+  "dependencies": {
+    "common-tags": "^1.8.0",
+    "got": "^11.8.2",
+    "image-size": "^1.0.0",
+    "mwbot": "^2.0.0"
+  }
+}
