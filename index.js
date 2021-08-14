@@ -122,7 +122,7 @@ async function updateWiki() {
     // Fetch images
     console.log("[INFO] - Fetching images");
     const baseImage = await got(img, REQUEST_OPTION).buffer(),
-      largeImage = await got(`${img.slice(img.length - 4)}_2x.png`, REQUEST_OPTION).buffer().catch(() => null),
+      largeImage = await got(`${img.slice(0, img.length - 4)}_2x.png`, REQUEST_OPTION).buffer().catch(() => null),
       imageSize = sizeOf(baseImage),
       finalImage = largeImage ?? baseImage,
       imageTitle = finalImage === largeImage ?
