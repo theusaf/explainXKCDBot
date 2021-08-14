@@ -11,6 +11,7 @@ const MediaWikiBot = require("mwbot"),
   CURRENT_COMIC_PAGE_ID = "1923",
   REVISIONS_PAGE_ID = "21149",
   CHECK_INTERVAL = 120e3,
+  NOT_EXPECTED_CHECK_INTERVAL = 36e5, // 1 hour intervals on days which are not Monday, Wednesday, Friday
   MAX_LOGIN_TIME = 6048e5, // 1 week, to be safe
   MONTHS = [
     "January",
@@ -40,6 +41,16 @@ if (!fs.statSync(TMP_PATH, {throwIfNoEntry: false})) {
 let expectedComicNumber = null,
   loginTimestamp = 0,
   bot = new MediaWikiBot();
+
+function getInterval() {
+  const d = new Date,
+    day = d.getDay();
+  if (day === 1 || day === 3 || day === 5) {
+    return CHECK_INTERVAL;
+  } else {
+    return NOT_EXPECTED_CHECK_INTERVAL;
+  }
+}
 
 /**
  * login - logs in and starts the updateWiki loop
@@ -88,7 +99,7 @@ async function updateWiki() {
     // if expected number is already set, but current number is lower, no need to re-poll explainxkcd, ignore.
     if (expectedComicNumber !== null && expectedComicNumber > num) {
       console.log("[INFO] - No new comic found.");
-      setTimeout(updateWiki, CHECK_INTERVAL);
+      setTimeout(updateWiki, getInterval());
       return;
     }
 
@@ -103,7 +114,7 @@ async function updateWiki() {
     // if expected number is already set, but current number is lower, no need to create new posts.
     if (expectedComicNumber > num) {
       console.log("[INFO] - No new comic found.");
-      setTimeout(updateWiki, CHECK_INTERVAL);
+      setTimeout(updateWiki, getInterval());
       return;
     }
 
@@ -128,7 +139,7 @@ async function updateWiki() {
   } catch (err) {
     console.error("[ERR] - Failed to fetch xkcd information. See below for details:");
     console.error(err);
-    setTimeout(updateWiki, CHECK_INTERVAL * 2);
+    setTimeout(updateWiki, getInterval() * 2);
   }
 }
 
@@ -218,11 +229,11 @@ async function createNewExplanation(info) {
       "Changed by theusafBOT"
     );
 
-    setTimeout(updateWiki, CHECK_INTERVAL);
+    setTimeout(updateWiki, getInterval());
   } catch (err) {
     console.error("[ERR] - Failed to create explanation. See below for details:");
     console.error(err);
-    setTimeout(updateWiki, CHECK_INTERVAL * 2);
+    setTimeout(updateWiki, getInterval() * 2);
   }
 }
 
