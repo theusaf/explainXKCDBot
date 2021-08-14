@@ -40,12 +40,13 @@ if (!fs.statSync(TMP_PATH, {throwIfNoEntry: false})) {
 
 let expectedComicNumber = null,
   loginTimestamp = 0,
+  dateChecked = new Date(0),
   bot = new MediaWikiBot();
 
 function getInterval() {
   const d = new Date,
     day = d.getDay();
-  if (day === 1 || day === 3 || day === 5) {
+  if ((day === 1 || day === 3 || day === 5) && d.getDate() !== dateChecked.getDate()) {
     return CHECK_INTERVAL;
   } else {
     return NOT_EXPECTED_CHECK_INTERVAL;
@@ -229,6 +230,7 @@ async function createNewExplanation(info) {
       "Changed by theusafBOT"
     );
 
+    dateChecked = new Date();
     setTimeout(updateWiki, getInterval());
   } catch (err) {
     console.error("[ERR] - Failed to create explanation. See below for details:");
