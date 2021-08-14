@@ -33,6 +33,10 @@ const MediaWikiBot = require("mwbot"),
   },
   EDIT_SUMMARY = "Created by theusafBOT";
 
+if (!fs.statSync(TMP_PATH, {throwIfNoEntry: false})) {
+  fs.mkdirSync(TMP_PATH);
+}
+
 let expectedComicNumber = null,
   loginTimestamp = 0,
   bot = new MediaWikiBot();
