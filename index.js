@@ -75,7 +75,6 @@ async function updateWiki() {
     console.log("[INFO] - Logging in again");
     bot = new MediaWikiBot();
     login();
-    setTimeout(updateWiki, CHECK_INTERVAL);
     return;
   }
   try {
