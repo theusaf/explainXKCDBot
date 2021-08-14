@@ -96,7 +96,7 @@ async function updateWiki() {
     // Fetching expected xkcd number from explain xkcd.
     console.log("[INFO] - Fetching latest comic on explainxkcd");
     const currentWikiTemplate = await bot.read("Template:LATESTCOMIC"),
-      currentRevision = currentWikiTemplate.query.pages[CURRENT_COMIC_PAGE_ID].revisions[0]["*"],
+      currentRevision = currentWikiTemplate.query.pages[CURRENT_COMIC_PAGE_ID].revisions[0]["*"], // .slots.main["*"],
       expectedNumber = +currentRevision.match(/\d+$/)[0] + 1;
 
     expectedComicNumber = expectedNumber;
@@ -205,11 +205,11 @@ async function createNewExplanation(info) {
     // update list of all comics
     console.log("[INFO] - Updating list of comics");
     const allComicsRead = await bot.read("List of all comics"),
-      allComicsContent = allComicsRead.query.pages[CURRENT_COMIC_PAGE_ID].revisions[0]["*"].split("\n");
-    for (let i in allComicsContent) {
+      allComicsContent = allComicsRead.query.pages[REVISIONS_PAGE_ID].revisions[0]["*"].split("\n"); // .slots.main["*"].split("\n");
+    for (let i = 0; i < allComicsContent.length; i++) {
       if (allComicsContent[i] === "!Date<onlyinclude>") {
         const isoDate = (new Date(date)).toISOString().slice(0, 10);
-        allComicsContent.splice(i + 1, 0, `{{comicsrow|${comicNum}|${isoDate}|${imageTitle}}}`);
+        allComicsContent.splice(i + 1, 0, `{{comicsrow|${comicNum}|${isoDate}|${imageTitle.replace(/_/g, " ")}}}`);
         break;
       }
     }
