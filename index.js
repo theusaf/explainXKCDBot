@@ -153,7 +153,7 @@ async function createNewExplanation(info) {
   try {
     const {imageTitle, comicData, imageSize, imageExtension, image, date} = info,
       {safe_title:comicTitle, alt, num:comicNum} = comicData,
-      imagePath = path.join(TMP_PATH, imageTitle);
+      imagePath = path.join(TMP_PATH, `${imageTitle}.${imageExtension}`);
 
     // write image to file system, because the lib doesn't take Buffers...
     fs.writeFileSync(imagePath, image);
