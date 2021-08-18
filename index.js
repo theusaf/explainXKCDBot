@@ -11,7 +11,7 @@ const MediaWikiBot = require("mwbot"),
   CURRENT_COMIC_PAGE_ID = "1923",
   REVISIONS_PAGE_ID = "21149",
   CHECK_INTERVAL = 120e3,
-  NOT_EXPECTED_CHECK_INTERVAL = 36e5, // 1 hour intervals on days which are not Monday, Wednesday, Friday
+  NOT_EXPECTED_CHECK_INTERVAL = 9e5, // 15 minute intervals on days which are not Monday, Wednesday, Friday
   MAX_LOGIN_TIME = 6048e5, // 1 week, to be safe
   MONTHS = [
     "January",
