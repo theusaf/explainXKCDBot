@@ -158,7 +158,13 @@ async function createNewExplanation(info) {
 
     // upload the image
     console.log("[INFO] - Uploading image to explainxkcd");
-    await bot.upload(imageTitle, imagePath);
+    await bot.upload(
+      imageTitle,
+      imagePath,
+      /_2x$/.test(imageTitle) ?
+        `Standard size can be found at ${comicData.img}` :
+        `Large size can be found at ${comicData.img.splice(0, comicData.img.length - 4)}_2x.png`
+    );
 
     // create/edit redirects
     console.log("[INFO] - Creating redirects");
