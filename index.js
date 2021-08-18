@@ -155,6 +155,9 @@ async function createNewExplanation(info) {
       {safe_title:comicTitle, alt, num:comicNum} = comicData,
       imagePath = path.join(TMP_PATH, `${imageTitle}.${imageExtension}`);
 
+    // Refresh the edit token to edit/create pages
+    await bot.getEditToken();
+
     // write image to file system, because the lib doesn't take Buffers...
     fs.writeFileSync(imagePath, image);
 
@@ -228,7 +231,7 @@ async function createNewExplanation(info) {
     for (let i = 0; i < allComicsContent.length; i++) {
       if (allComicsContent[i] === "!Date<onlyinclude>") {
         const isoDate = (new Date(date)).toISOString().slice(0, 10);
-        allComicsContent.splice(i + 1, 0, `{{comicsrow|${comicNum}|${isoDate}|${imageTitle.replace(/_/g, " ")}.${imageExtension}}}`);
+        allComicsContent.splice(i + 1, 0, `{{comicsrow|${comicNum}|${isoDate}|comicTitle|${imageTitle.replace(/_/g, " ")}.${imageExtension}}}`);
         break;
       }
     }
