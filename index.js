@@ -122,19 +122,21 @@ async function updateWiki() {
     // Fetch images
     console.log("[INFO] - Fetching images");
     const baseImage = await got(img, REQUEST_OPTION).buffer(),
-      largeImage = await got(`${img.slice(0, img.length - 4)}_2x.png`, REQUEST_OPTION).buffer().catch(() => null),
+      imageExtension = comicData.img.match(/(?<=\.)[a-z]+$/)[0],
+      largeImage = await got(`${img.match(/.*?(?=\.[a-z]+$)/)[0]}_2x.${imageExtension}`, REQUEST_OPTION).buffer().catch(() => null),
       imageSize = sizeOf(baseImage),
       finalImage = largeImage ?? baseImage,
       imageTitle = finalImage === largeImage ?
-        comicData.img.match(/(?<=\/comics\/).*?(?=\.png)/)[0] + "_2x" :
-        comicData.img.match(/(?<=\/comics\/).*?(?=\.png)/)[0];
+        comicData.img.match(/(?<=\/comics\/).*?(?=\.[a-z]+$)/)[0] + "_2x" :
+        comicData.img.match(/(?<=\/comics\/).*?(?=\.[a-z]+$)/)[0];
 
     createNewExplanation({
       date,
       image: finalImage,
       imageSize,
       comicData,
-      imageTitle
+      imageTitle,
+      imageExtension
     });
 
   } catch (err) {
@@ -149,7 +151,7 @@ async function updateWiki() {
  */
 async function createNewExplanation(info) {
   try {
-    const {imageTitle, comicData, imageSize, image, date} = info,
+    const {imageTitle, comicData, imageSize, imageExtension, image, date} = info,
       {safe_title:comicTitle, alt, num:comicNum} = comicData,
       imagePath = path.join(TMP_PATH, imageTitle);
 
@@ -159,11 +161,11 @@ async function createNewExplanation(info) {
     // upload the image
     console.log("[INFO] - Uploading image to explainxkcd");
     await bot.upload(
-      imageTitle,
+      `${imageTitle}.${imageExtension}`,
       imagePath,
       /_2x$/.test(imageTitle) ?
         `Standard size can be found at ${comicData.img}` :
-        `Large size can be found at ${comicData.img.splice(0, comicData.img.length - 4)}_2x.png`
+        `Large size can be found at ${comicData.img.match(/.*?(?=\.[a-z]+$)/)[0]}_2x.${imageExtension}`
     );
 
     // create/edit redirects
@@ -188,7 +190,7 @@ async function createNewExplanation(info) {
       | number    = ${comicNum}
       | date      = ${date}
       | title     = ${comicTitle}
-      | image     = ${imageTitle}
+      | image     = ${imageTitle}.${imageExtension}
       | imagesize = ${imageSize.width}x${imageSize.height}px
       | titletext = ${alt}
       }}
@@ -226,7 +228,7 @@ async function createNewExplanation(info) {
     for (let i = 0; i < allComicsContent.length; i++) {
       if (allComicsContent[i] === "!Date<onlyinclude>") {
         const isoDate = (new Date(date)).toISOString().slice(0, 10);
-        allComicsContent.splice(i + 1, 0, `{{comicsrow|${comicNum}|${isoDate}|${imageTitle.replace(/_/g, " ")}}}`);
+        allComicsContent.splice(i + 1, 0, `{{comicsrow|${comicNum}|${isoDate}|${imageTitle.replace(/_/g, " ")}.${imageExtension}}}`);
         break;
       }
     }
