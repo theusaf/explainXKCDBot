@@ -27,7 +27,6 @@
   "dependencies": {
     "common-tags": "^1.8.0",
     "got": "^11.8.2",
-    "image-size": "^1.0.0",
     "mwbot": "^2.0.0"
   },
   "devDependencies": {

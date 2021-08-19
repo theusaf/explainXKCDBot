@@ -1,5 +1,4 @@
 const MediaWikiBot = require("mwbot"),
-  sizeOf = require("image-size"),
   got = require("got"),
   fs = require("fs"),
   path = require("path"),
@@ -123,17 +122,11 @@ async function updateWiki() {
     console.log("[INFO] - Fetching images");
     const baseImage = await got(img, REQUEST_OPTION).buffer(),
       imageExtension = comicData.img.match(/(?<=\.)[a-z]+$/)[0],
-      largeImage = await got(`${img.match(/.*?(?=\.[a-z]+$)/)[0]}_2x.${imageExtension}`, REQUEST_OPTION).buffer().catch(() => null),
-      imageSize = sizeOf(baseImage),
-      finalImage = largeImage ?? baseImage,
-      imageTitle = finalImage === largeImage ?
-        comicData.img.match(/(?<=\/comics\/).*?(?=\.[a-z]+$)/)[0] + "_2x" :
-        comicData.img.match(/(?<=\/comics\/).*?(?=\.[a-z]+$)/)[0];
+      imageTitle = comicData.img.match(/(?<=\/comics\/).*?(?=\.[a-z]+$)/)[0];
 
     createNewExplanation({
       date,
-      image: finalImage,
-      imageSize,
+      image: baseImage,
       comicData,
       imageTitle,
       imageExtension
@@ -151,7 +144,7 @@ async function updateWiki() {
  */
 async function createNewExplanation(info) {
   try {
-    const {imageTitle, comicData, imageSize, imageExtension, image, date} = info,
+    const {imageTitle, comicData, imageExtension, image, date} = info,
       {safe_title:comicTitle, alt, num:comicNum} = comicData,
       imagePath = path.join(TMP_PATH, `${imageTitle}.${imageExtension}`);
 
@@ -166,9 +159,7 @@ async function createNewExplanation(info) {
     await bot.upload(
       `${imageTitle}.${imageExtension}`,
       imagePath,
-      /_2x$/.test(imageTitle) ?
-        `Standard size can be found at ${comicData.img}` :
-        `Large size can be found at ${comicData.img.match(/.*?(?=\.[a-z]+$)/)[0]}_2x.${imageExtension}`
+      `Large size can be found at ${comicData.img.match(/.*?(?=\.[a-z]+$)/)[0]}_2x.${imageExtension}`
     );
 
     // create/edit redirects
@@ -194,7 +185,6 @@ async function createNewExplanation(info) {
       | date      = ${date}
       | title     = ${comicTitle}
       | image     = ${imageTitle}.${imageExtension}
-      | imagesize = ${imageSize.width}x${imageSize.height}px
       | titletext = ${alt}
       }}
 
