@@ -150,7 +150,8 @@ async function createNewExplanation(info) {
       imagePath = path.join(TMP_PATH, `${imageTitle}.${imageExtension}`);
 
     // Refresh the edit token to edit/create pages
-    await bot.loginGetEditToken(LOGIN_DATA);
+    bot.editToken = null;
+    await bot.getEditToken();
 
     // write image to file system, because the lib doesn't take Buffers...
     fs.writeFileSync(imagePath, image);
