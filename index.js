@@ -31,7 +31,12 @@ const MediaWikiBot = require("mwbot"),
       "User-Agent": USER_AGENT
     }
   },
-  EDIT_SUMMARY = "Created by theusafBOT";
+  EDIT_SUMMARY = "Created by theusafBOT",
+  LOGIN_DATA = {
+    apiUrl: API_URL,
+    username,
+    password
+  };
 
 if (!fs.statSync(TMP_PATH, {throwIfNoEntry: false})) {
   fs.mkdirSync(TMP_PATH);
@@ -60,11 +65,7 @@ function login() {
     console.log("[ERR] - Usage: node index.js <username> <password>");
     process.exit(0);
   } else {
-    bot.loginGetEditToken({
-      apiUrl: API_URL,
-      username,
-      password
-    }).then(() => {
+    bot.loginGetEditToken(LOGIN_DATA).then(() => {
       loginTimestamp = Date.now();
       updateWiki();
     }).catch(err => {
@@ -149,7 +150,7 @@ async function createNewExplanation(info) {
       imagePath = path.join(TMP_PATH, `${imageTitle}.${imageExtension}`);
 
     // Refresh the edit token to edit/create pages
-    await bot.getEditToken();
+    await bot.loginGetEditToken(LOGIN_DATA);
 
     // write image to file system, because the lib doesn't take Buffers...
     fs.writeFileSync(imagePath, image);
