@@ -223,7 +223,7 @@ async function createNewExplanation(info) {
     for (let i = 0; i < allComicsContent.length; i++) {
       if (allComicsContent[i] === "!Date<onlyinclude>") {
         const isoDate = (new Date(date)).toISOString().slice(0, 10);
-        allComicsContent.splice(i + 1, 0, `{{comicsrow|${comicNum}|${isoDate}|comicTitle|${imageTitle.replace(/_/g, " ")}.${imageExtension}}}`);
+        allComicsContent.splice(i + 1, 0, `{{comicsrow|${comicNum}|${isoDate}|${comicTitle}|${imageTitle.replace(/_/g, " ")}.${imageExtension}}}`);
         break;
       }
     }
