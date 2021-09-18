@@ -1,7 +1,7 @@
 # Explain XKCD Bot
 This is a NodeJS program which checks the latest xkcd comic, and automatically creates the explainXKCD wiki pages for it.
 
-It uses the `0.info.json` api to collect comic information.
+It uses the `info.0.json` api to collect comic information.
 
 xkcd is queried every 2 minutes, and explainXKCD is queried and updated only when a new comic is released.
 
