@@ -235,6 +235,21 @@ async function createNewExplanation(info) {
 
     dateChecked = new Date();
     setTimeout(updateWiki, getInterval());
+
+    // Archive it!
+    try {
+      const urls = [
+        "https://xkcd.com",
+        "https://explainxkcd.com",
+        `https://xkcd.com/${comicNum}`,
+        `https://explainxkcd.com/${comicNum}`
+      ]
+      for (const url of urls) {
+        await got(`https://web.archive.org/save/${url}`);
+      }
+    } catch (err) {
+      /* Ignored */
+    }
   } catch (err) {
     console.error("[ERR] - Failed to create explanation. See below for details:");
     console.error(err);
