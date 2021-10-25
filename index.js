@@ -242,6 +242,7 @@ async function createNewExplanation(info) {
         "https://xkcd.com",
         "https://explainxkcd.com",
         `https://xkcd.com/${comicNum}`,
+        `https://explainxkcd.com/${comicNum - 1}`,
         `https://explainxkcd.com/${comicNum}`
       ]
       for (const url of urls) {
