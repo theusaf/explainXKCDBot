@@ -1,8 +1,13 @@
-const MediaWikiBot = require("mwbot"),
-  got = require("got"),
-  fs = require("fs"),
-  path = require("path"),
-  {stripIndent} = require("common-tags"),
+import MediaWikiBot from "mwbot";
+import got from "got";
+import fs from "fs";
+import path from "path";
+import sizeOf from "image-size";
+import { stripIndent } from "common-tags";
+import { fileURLToPath } from "url";
+import { dirname } from "path";
+
+const __dirname = dirname(fileURLToPath(import.meta.url)),
   [,,username, password] = process.argv,
   TMP_PATH = path.join(__dirname, "tmp"),
   API_URL = "https://explainxkcd.com/wiki/api.php",
@@ -123,6 +128,13 @@ async function updateWiki() {
     console.log("[INFO] - Fetching images");
     const baseImage = await got(img, REQUEST_OPTION).buffer(),
       imageExtension = comicData.img.match(/(?<=\.)[a-z]+$/)[0],
+      largeImage = await got(`${img.match(/.*?(?=\.[a-z]+$)/)[0]}_2x.${imageExtension}`, REQUEST_OPTION).buffer().catch(() => null),
+      baseImageSize = sizeOf(baseImage),
+      largeImageSize = largeImage ? sizeOf(largeImage) : null,
+      // finalImage = largeImage ?? baseImage,
+      // imageTitle = finalImage === largeImage ?
+      //   comicData.img.match(/(?<=\/comics\/).*?(?=\.[a-z]+$)/)[0] + "_2x" :
+      //   comicData.img.match(/(?<=\/comics\/).*?(?=\.[a-z]+$)/)[0];
       imageTitle = comicData.img.match(/(?<=\/comics\/).*?(?=\.[a-z]+$)/)[0];
 
     createNewExplanation({
@@ -130,7 +142,9 @@ async function updateWiki() {
       image: baseImage,
       comicData,
       imageTitle,
-      imageExtension
+      imageExtension,
+      baseImageSize,
+      largeImageSize
     });
 
   } catch (err) {
@@ -145,8 +159,8 @@ async function updateWiki() {
  */
 async function createNewExplanation(info) {
   try {
-    const {imageTitle, comicData, imageExtension, image, date} = info,
-      {safe_title:comicTitle, alt, num:comicNum} = comicData,
+    const { imageTitle, comicData, imageExtension, image, date, baseImageSize, largeImageSize } = info,
+      { safe_title:comicTitle, alt, num:comicNum } = comicData,
       imagePath = path.join(TMP_PATH, `${imageTitle}.${imageExtension}`);
 
     // Refresh the edit token to edit/create pages
@@ -179,6 +193,15 @@ async function createNewExplanation(info) {
 
     // create main page
     console.log("[INFO] - Creating main page");
+    // Note 2022-02-03
+    // Since both the 'standard' and '2x' size seem to be the same size,
+    // For legacy explainxkcd sake, divide size by 2
+    let sizeString = "";
+    if (largeImageSize ??
+    baseImageSize.width === largeImageSize.width &&
+    baseImageSize.height === largeImageSize.height) {
+      sizeString = `${Math.floor(baseImageSize.width / 2)}x${Math.floor(baseImageSize.height / 2)}px`;
+    }
     await bot.edit(
       `${comicNum}: ${comicTitle}`,
       stripIndent`
@@ -187,6 +210,7 @@ async function createNewExplanation(info) {
       | date      = ${date}
       | title     = ${comicTitle}
       | image     = ${imageTitle}.${imageExtension}
+      | imagesize = ${sizeString}
       | titletext = ${alt}
       }}
 
@@ -244,7 +268,7 @@ async function createNewExplanation(info) {
         `https://xkcd.com/${comicNum}`,
         `https://explainxkcd.com/${comicNum - 1}`,
         `https://explainxkcd.com/${comicNum}`
-      ]
+      ];
       for (const url of urls) {
         await got(`https://web.archive.org/save/${url}`);
       }
