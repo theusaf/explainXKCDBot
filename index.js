@@ -135,10 +135,6 @@ async function updateWiki() {
       largeImage = await got(`${img.match(/.*?(?=\.[a-z]+$)/)[0]}_2x.${imageExtension}`, REQUEST_OPTION).buffer().catch(() => null),
       baseImageSize = sizeOf(baseImage),
       largeImageSize = largeImage ? sizeOf(largeImage) : null,
-      // finalImage = largeImage ?? baseImage,
-      // imageTitle = finalImage === largeImage ?
-      //   comicData.img.match(/(?<=\/comics\/).*?(?=\.[a-z]+$)/)[0] + "_2x" :
-      //   comicData.img.match(/(?<=\/comics\/).*?(?=\.[a-z]+$)/)[0];
       imageTitle = comicData.img.match(/(?<=\/comics\/).*?(?=\.[a-z]+$)/)[0];
 
     createNewExplanation({
@@ -215,7 +211,7 @@ async function createNewExplanation(info) {
       | title     = ${comicTitle}
       | image     = ${imageTitle}.${imageExtension}
       | imagesize = ${sizeString}
-      | titletext = ${alt}
+      | titletext = ${alt.replace(/\n/g, "<br>")}
       }}
 
       ==Explanation==
