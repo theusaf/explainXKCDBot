@@ -198,7 +198,7 @@ async function createNewExplanation(info) {
     // Since both the 'standard' and '2x' size seem to be the same size,
     // For legacy explainxkcd sake, divide size by 2
     let sizeString = "";
-    if (largeImageSize ??
+    if (largeImageSize &&
     baseImageSize.width === largeImageSize.width &&
     baseImageSize.height === largeImageSize.height) {
       sizeString = `${Math.floor(baseImageSize.width / 2)}x${Math.floor(baseImageSize.height / 2)}px`;
