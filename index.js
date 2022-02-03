@@ -52,6 +52,10 @@ let expectedComicNumber = null,
   dateChecked = new Date(0),
   bot = new MediaWikiBot();
 
+function log(message) {
+  console.log(`[${(new Date).toISOString()}] - ${message}`);
+}
+
 function getInterval() {
   const d = new Date,
     day = d.getDay();
@@ -89,14 +93,14 @@ function login() {
 async function updateWiki() {
   // log in again after a certain amount of time
   if (Date.now() - loginTimestamp > MAX_LOGIN_TIME) {
-    console.log("[INFO] - Logging in again");
+    log("[INFO] - Logging in again");
     bot = new MediaWikiBot();
     login();
     return;
   }
   try {
     // Fetch latest xkcd information
-    console.log("[INFO] - Fetching information from xkcd");
+    log("[INFO] - Fetching information from xkcd");
     const {body} = await got("https://xkcd.com/info.0.json", REQUEST_OPTION),
       comicData = JSON.parse(body),
       {num, img, day, month, year} = comicData,
@@ -104,13 +108,13 @@ async function updateWiki() {
 
     // if expected number is already set, but current number is lower, no need to re-poll explainxkcd, ignore.
     if (expectedComicNumber !== null && expectedComicNumber > num) {
-      console.log("[INFO] - No new comic found.");
+      log("[INFO] - No new comic found.");
       setTimeout(updateWiki, getInterval());
       return;
     }
 
     // Fetching expected xkcd number from explain xkcd.
-    console.log("[INFO] - Fetching latest comic on explainxkcd");
+    log("[INFO] - Fetching latest comic on explainxkcd");
     const currentWikiTemplate = await bot.read("Template:LATESTCOMIC"),
       currentRevision = currentWikiTemplate.query.pages[CURRENT_COMIC_PAGE_ID].revisions[0]["*"], // .slots.main["*"],
       expectedNumber = +currentRevision.match(/\d+$/)[0] + 1;
@@ -119,13 +123,13 @@ async function updateWiki() {
 
     // if expected number is already set, but current number is lower, no need to create new posts.
     if (expectedComicNumber > num) {
-      console.log("[INFO] - No new comic found.");
+      log("[INFO] - No new comic found.");
       setTimeout(updateWiki, getInterval());
       return;
     }
 
     // Fetch images
-    console.log("[INFO] - Fetching images");
+    log("[INFO] - Fetching images");
     const baseImage = await got(img, REQUEST_OPTION).buffer(),
       imageExtension = comicData.img.match(/(?<=\.)[a-z]+$/)[0],
       largeImage = await got(`${img.match(/.*?(?=\.[a-z]+$)/)[0]}_2x.${imageExtension}`, REQUEST_OPTION).buffer().catch(() => null),
@@ -171,7 +175,7 @@ async function createNewExplanation(info) {
     fs.writeFileSync(imagePath, image);
 
     // upload the image
-    console.log("[INFO] - Uploading image to explainxkcd");
+    log("[INFO] - Uploading image to explainxkcd");
     await bot.upload(
       `${imageTitle}.${imageExtension}`,
       imagePath,
@@ -179,7 +183,7 @@ async function createNewExplanation(info) {
     );
 
     // create/edit redirects
-    console.log("[INFO] - Creating redirects");
+    log("[INFO] - Creating redirects");
     await bot.edit(
       comicTitle,
       `#REDIRECT [[${comicNum}: ${comicTitle}]]\n`,
@@ -192,7 +196,7 @@ async function createNewExplanation(info) {
     );
 
     // create main page
-    console.log("[INFO] - Creating main page");
+    log("[INFO] - Creating main page");
     // Note 2022-02-03
     // Since both the 'standard' and '2x' size seem to be the same size,
     // For legacy explainxkcd sake, divide size by 2
@@ -225,7 +229,7 @@ async function createNewExplanation(info) {
     );
 
     // create talk page
-    console.log("[INFO] - Creating talk page");
+    log("[INFO] - Creating talk page");
     await bot.edit(
       `Talk:${comicNum}: ${comicTitle}`,
       "<!--Please sign your posts with ~~~~ and don't delete this text. New comments should be added at the bottom.-->",
@@ -233,7 +237,7 @@ async function createNewExplanation(info) {
     );
 
     // update latest comic
-    console.log("[INFO] - Updating latest comic");
+    log("[INFO] - Updating latest comic");
     await bot.edit(
       "Template:LATESTCOMIC",
       `<noinclude>The latest [[xkcd]] comic is number:</noinclude> ${comicNum}`,
@@ -241,7 +245,7 @@ async function createNewExplanation(info) {
     );
 
     // update list of all comics
-    console.log("[INFO] - Updating list of comics");
+    log("[INFO] - Updating list of comics");
     const allComicsRead = await bot.read("List of all comics"),
       allComicsContent = allComicsRead.query.pages[REVISIONS_PAGE_ID].revisions[0]["*"].split("\n"); // .slots.main["*"].split("\n");
     for (let i = 0; i < allComicsContent.length; i++) {
