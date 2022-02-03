@@ -37,6 +37,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url)),
     }
   },
   EDIT_SUMMARY = "Created by theusafBOT",
+  CHANGE_SUMMARY = "Changed by theusafBOT",
   LOGIN_DATA = {
     apiUrl: API_URL,
     username,
@@ -237,7 +238,7 @@ async function createNewExplanation(info) {
     await bot.edit(
       "Template:LATESTCOMIC",
       `<noinclude>The latest [[xkcd]] comic is number:</noinclude> ${comicNum}`,
-      "Changed by theusafBOT"
+      CHANGE_SUMMARY
     );
 
     // update list of all comics
@@ -254,7 +255,7 @@ async function createNewExplanation(info) {
     await bot.edit(
       "List of all comics",
       allComicsContent.join("\n"),
-      "Changed by theusafBOT"
+      CHANGE_SUMMARY
     );
 
     dateChecked = new Date();
