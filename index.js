@@ -117,7 +117,7 @@ async function updateWiki() {
     // Fetching expected xkcd number from explain xkcd.
     log("[INFO] - Fetching latest comic on explainxkcd");
     const currentWikiTemplate = await bot.read("Template:LATESTCOMIC"),
-      currentRevision = currentWikiTemplate.query.pages[CURRENT_COMIC_PAGE_ID].revisions[0]["*"], // .slots.main["*"],
+      currentRevision = currentWikiTemplate.query.pages[CURRENT_COMIC_PAGE_ID].revisions[0]["*"],
       expectedNumber = +currentRevision.match(/\d+$/)[0] + 1;
 
     expectedComicNumber = expectedNumber;
