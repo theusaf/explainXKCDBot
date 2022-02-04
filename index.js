@@ -210,8 +210,10 @@ async function createNewExplanation(info) {
       | number    = ${comicNum}
       | date      = ${date}
       | title     = ${comicTitle}
-      | image     = ${imageTitle}.${imageExtension}
-      | imagesize = ${sizeString}
+      ${sizeString === "" ?
+      `| image     = ${imageTitle}.${imageExtension}` :
+      `| image     = ${imageTitle}.${imageExtension}
+      | imagesize = ${sizeString}`}
       | titletext = ${alt.replace(/\n/g, "<br>")}
       }}
 
