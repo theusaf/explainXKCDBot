@@ -217,7 +217,14 @@ async function createNewExplanation(info) {
 
       ==Explanation==
       {{incomplete|Created by a BOT - Please change this comment when editing this page. Do NOT delete this tag too soon.}}
-
+      ${sizeString === "" ? "" : `
+      ==Trivia==
+      * '''This trivia section was created by a BOT'''
+      * The [https://imgs.xkcd.com/comics/${imageTitle}.${imageExtension} standard size] image was uploaded with the same resolution/size as the [https://imgs.xkcd.com/comics/${imageTitle}_2x.${imageExtension} 2x version].
+      * This is not the case for many previous comics.
+      * As a result, [[User:TheusafBOT]] has added an imagesize paramter at half the size to keep a consistent size.
+      * The original image can be found here: [[File:${imageTitle}.${imageExtension}]]
+      `}
       ==Transcript==
       {{incomplete transcript|Do NOT delete this tag too soon.}}
       {{comic discussion}}
