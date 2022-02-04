@@ -239,7 +239,7 @@ async function createNewExplanation(info) {
       `Talk:${comicNum}: ${comicTitle}`,
       stripIndent`
       <!--Please sign your posts with ~~~~ and don't delete this text. New comments should be added at the bottom.-->
-      The 'standard' and '2x' sized images had the same size, so a Trivia section has been automatically generated, and an imagesize paramter has been added (at half size) to render the image consistently with other comics on this website. --~~~~
+      ${sizeString === "" ? "" : "The 'standard' and '2x' sized images had the same size, so a Trivia section has been automatically generated, and an imagesize paramter has been added (at half size) to render the image consistently with other comics on this website. --~~~~"}
       `,
       EDIT_SUMMARY
     );
