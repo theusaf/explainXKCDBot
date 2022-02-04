@@ -217,6 +217,9 @@ async function createNewExplanation(info) {
 
       ==Explanation==
       {{incomplete|Created by a BOT - Please change this comment when editing this page. Do NOT delete this tag too soon.}}
+
+      ==Transcript==
+      {{incomplete transcript|Do NOT delete this tag too soon.}}
       ${sizeString === "" ? "" : `
       ==Trivia==
       * '''This trivia section was created by a BOT'''
@@ -225,8 +228,6 @@ async function createNewExplanation(info) {
       * As a result, [[User:TheusafBOT]] has added an imagesize paramter at half the size to keep a consistent size.
       * The original image can be found here: [[File:${imageTitle}.${imageExtension}]]
       `}
-      ==Transcript==
-      {{incomplete transcript|Do NOT delete this tag too soon.}}
       {{comic discussion}}
       `,
       EDIT_SUMMARY
