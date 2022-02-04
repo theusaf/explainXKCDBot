@@ -227,8 +227,6 @@ async function createNewExplanation(info) {
       * '''This trivia section was created by a BOT'''
       * The [https://imgs.xkcd.com/comics/${imageTitle}.${imageExtension} standard size] image was uploaded with the same resolution/size as the [https://imgs.xkcd.com/comics/${imageTitle}_2x.${imageExtension} 2x version].
       * This is not the case for many previous comics.
-      * As a result, [[User:TheusafBOT]] has added an imagesize paramter at half the size to keep a consistent size.
-      * The original image can be found here: [[File:${imageTitle}.${imageExtension}]]
       `}
       {{comic discussion}}
       `,
@@ -239,7 +237,10 @@ async function createNewExplanation(info) {
     log("[INFO] - Creating talk page");
     await bot.edit(
       `Talk:${comicNum}: ${comicTitle}`,
-      "<!--Please sign your posts with ~~~~ and don't delete this text. New comments should be added at the bottom.-->",
+      stripIndent`
+      <!--Please sign your posts with ~~~~ and don't delete this text. New comments should be added at the bottom.-->
+      The 'standard' and '2x' sized images had the same size, so a Trivia section has been automatically generated, and an imagesize paramter has been added (at half size) to render the image consistently with other comics on this website. --~~~~
+      `,
       EDIT_SUMMARY
     );
 
