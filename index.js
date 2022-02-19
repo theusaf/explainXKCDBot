@@ -176,7 +176,13 @@ async function createNewExplanation(info) {
     await bot.upload(
       `${imageTitle}.${imageExtension}`,
       imagePath,
-      `Large size can be found at ${comicData.img.match(/.*?(?=\.[a-z]+$)/)[0]}_2x.${imageExtension}`
+      stripIndent`
+      == Summary ==
+      Large size can be found at ${comicData.img.match(/.*?(?=\.[a-z]+$)/)[0]}_2x.${imageExtension}
+
+      == Licensing ==
+      {{XKCD file}}
+      `
     );
 
     // create/edit redirects
