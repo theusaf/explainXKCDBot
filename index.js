@@ -187,11 +187,19 @@ async function createNewExplanation(info) {
 
     // create/edit redirects
     log("[INFO] - Creating redirects");
-    await bot.edit(
-      comicTitle,
-      `#REDIRECT [[${comicNum}: ${comicTitle}]]\n`,
-      EDIT_SUMMARY
-    );
+
+    // If the comic title is a number underneath the current comic number, do not create this redirect
+    // TODO: Theoretically, this issue could allow Randall to edit non-comic pages using the title of
+    // his comics... A better solution should be created
+    if (!/^\d+$/.test(comicTitle) && +comicTitle < comicNum) {
+      await bot.edit(
+        comicTitle,
+        `#REDIRECT [[${comicNum}: ${comicTitle}]]\n`,
+        EDIT_SUMMARY
+      );
+    } else {
+      log(`[WARN] - Skipped creation of '${comicTitle}' due to lower numerical title`);
+    }
     await bot.edit(
       `${comicNum}`,
       `#REDIRECT [[${comicNum}: ${comicTitle}]]\n`,
