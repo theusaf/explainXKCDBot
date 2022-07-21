@@ -191,7 +191,7 @@ async function createNewExplanation(info) {
     // If the comic title is a number underneath the current comic number, do not create this redirect
     // TODO: Theoretically, this issue could allow Randall to edit non-comic pages using the title of
     // his comics... A better solution should be created
-    if (!/^\d+$/.test(comicTitle) && +comicTitle < comicNum) {
+    if (!/^\d+$/.test(comicTitle) || +comicTitle > comicNum) {
       await bot.edit(
         comicTitle,
         `#REDIRECT [[${comicNum}: ${comicTitle}]]\n`,
