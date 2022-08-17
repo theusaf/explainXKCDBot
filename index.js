@@ -8,10 +8,11 @@ import { fileURLToPath } from "url";
 import { dirname } from "path";
 
 const __dirname = dirname(fileURLToPath(import.meta.url)),
-  [,,username, password] = process.argv,
+  [, , username, password] = process.argv,
   TMP_PATH = path.join(__dirname, "tmp"),
   API_URL = "https://explainxkcd.com/wiki/api.php",
-  USER_AGENT = "Netscape Navigator/4.0 (Apple IIGS; 1024x1; x64) Pentium 4 (JavaScript, with Ad Blockers) Boat mode, HIGH-HEAT DRYING DISABLED, explainxkcdBot",
+  USER_AGENT =
+    "Netscape Navigator/4.0 (Apple IIGS; 1024x1; x64) Pentium 4 (JavaScript, with Ad Blockers) Boat mode, HIGH-HEAT DRYING DISABLED, explainxkcdBot",
   CURRENT_COMIC_PAGE_ID = "1923",
   REVISIONS_PAGE_ID = "21149",
   CHECK_INTERVAL = 120e3,
@@ -29,22 +30,22 @@ const __dirname = dirname(fileURLToPath(import.meta.url)),
     "September",
     "October",
     "November",
-    "December"
+    "December",
   ],
   REQUEST_OPTION = {
     headers: {
-      "User-Agent": USER_AGENT
-    }
+      "User-Agent": USER_AGENT,
+    },
   },
   EDIT_SUMMARY = "Created by theusafBOT",
   CHANGE_SUMMARY = "Changed by theusafBOT",
   LOGIN_DATA = {
     apiUrl: API_URL,
     username,
-    password
+    password,
   };
 
-if (!fs.statSync(TMP_PATH, {throwIfNoEntry: false})) {
+if (!fs.statSync(TMP_PATH, { throwIfNoEntry: false })) {
   fs.mkdirSync(TMP_PATH);
 }
 
@@ -54,13 +55,16 @@ let expectedComicNumber = null,
   bot = new MediaWikiBot();
 
 function log(message) {
-  console.log(`[${(new Date).toISOString()}] - ${message}`);
+  console.log(`[${new Date().toISOString()}] - ${message}`);
 }
 
 function getInterval() {
-  const d = new Date,
+  const d = new Date(),
     day = d.getDay();
-  if ((day === 1 || day === 3 || day === 5) && d.getDate() !== dateChecked.getDate()) {
+  if (
+    (day === 1 || day === 3 || day === 5) &&
+    d.getDate() !== dateChecked.getDate()
+  ) {
     return CHECK_INTERVAL;
   } else {
     return NOT_EXPECTED_CHECK_INTERVAL;
@@ -75,14 +79,17 @@ function login() {
     console.log("[ERR] - Usage: node index.js <username> <password>");
     process.exit(0);
   } else {
-    bot.loginGetEditToken(LOGIN_DATA).then(() => {
-      loginTimestamp = Date.now();
-      updateWiki();
-    }).catch(err => {
-      console.error("[ERR] - Failed to log in");
-      console.error(err);
-      process.exit(0);
-    });
+    bot
+      .loginGetEditToken(LOGIN_DATA)
+      .then(() => {
+        loginTimestamp = Date.now();
+        updateWiki();
+      })
+      .catch((err) => {
+        console.error("[ERR] - Failed to log in");
+        console.error(err);
+        process.exit(0);
+      });
   }
 }
 
@@ -102,9 +109,9 @@ async function updateWiki() {
   try {
     // Fetch latest xkcd information
     log("[INFO] - Fetching information from xkcd");
-    const {body} = await got("https://xkcd.com/info.0.json", REQUEST_OPTION),
+    const { body } = await got("https://xkcd.com/info.0.json", REQUEST_OPTION),
       comicData = JSON.parse(body),
-      {num, img, day, month, year} = comicData,
+      { num, img, day, month, year } = comicData,
       date = `${MONTHS[+month - 1]} ${day}, ${year}`;
 
     // if expected number is already set, but current number is lower, no need to re-poll explainxkcd, ignore.
@@ -117,7 +124,10 @@ async function updateWiki() {
     // Fetching expected xkcd number from explain xkcd.
     log("[INFO] - Fetching latest comic on explainxkcd");
     const currentWikiTemplate = await bot.read("Template:LATESTCOMIC"),
-      currentRevision = currentWikiTemplate.query.pages[CURRENT_COMIC_PAGE_ID].revisions[0]["*"],
+      currentRevision =
+        currentWikiTemplate.query.pages[CURRENT_COMIC_PAGE_ID].revisions[0][
+          "*"
+        ],
       expectedNumber = +currentRevision.match(/\d+$/)[0] + 1;
 
     expectedComicNumber = expectedNumber;
@@ -133,7 +143,12 @@ async function updateWiki() {
     log("[INFO] - Fetching images");
     const baseImage = await got(img, REQUEST_OPTION).buffer(),
       imageExtension = comicData.img.match(/(?<=\.)[a-z]+$/)[0],
-      largeImage = await got(`${img.match(/.*?(?=\.[a-z]+$)/)[0]}_2x.${imageExtension}`, REQUEST_OPTION).buffer().catch(() => null),
+      largeImage = await got(
+        `${img.match(/.*?(?=\.[a-z]+$)/)[0]}_2x.${imageExtension}`,
+        REQUEST_OPTION
+      )
+        .buffer()
+        .catch(() => null),
       baseImageSize = sizeOf(baseImage),
       largeImageSize = largeImage ? sizeOf(largeImage) : null,
       imageTitle = comicData.img.match(/(?<=\/comics\/).*?(?=\.[a-z]+$)/)[0];
@@ -145,11 +160,12 @@ async function updateWiki() {
       imageTitle,
       imageExtension,
       baseImageSize,
-      largeImageSize
+      largeImageSize,
     });
-
   } catch (err) {
-    console.error("[ERR] - Failed to fetch xkcd information. See below for details:");
+    console.error(
+      "[ERR] - Failed to fetch xkcd information. See below for details:"
+    );
     console.error(err);
     setTimeout(updateWiki, getInterval() * 2);
   }
@@ -160,8 +176,16 @@ async function updateWiki() {
  */
 async function createNewExplanation(info) {
   try {
-    const { imageTitle, comicData, imageExtension, image, date, baseImageSize, largeImageSize } = info,
-      { safe_title:comicTitle, alt, num:comicNum } = comicData,
+    const {
+        imageTitle,
+        comicData,
+        imageExtension,
+        image,
+        date,
+        baseImageSize,
+        largeImageSize,
+      } = info,
+      { safe_title: comicTitle, alt, num: comicNum } = comicData,
       imagePath = path.join(TMP_PATH, `${imageTitle}.${imageExtension}`);
 
     // Refresh the edit token to edit/create pages
@@ -178,7 +202,9 @@ async function createNewExplanation(info) {
       imagePath,
       stripIndent`
       == Summary ==
-      Large size can be found at ${comicData.img.match(/.*?(?=\.[a-z]+$)/)[0]}_2x.${imageExtension}
+      Large size can be found at ${
+        comicData.img.match(/.*?(?=\.[a-z]+$)/)[0]
+      }_2x.${imageExtension}
 
       == Licensing ==
       {{XKCD file}}
@@ -198,7 +224,9 @@ async function createNewExplanation(info) {
         EDIT_SUMMARY
       );
     } else {
-      log(`[WARN] - Skipped creation of '${comicTitle}' due to lower numerical title`);
+      log(
+        `[WARN] - Skipped creation of '${comicTitle}' due to lower numerical title`
+      );
     }
     await bot.edit(
       `${comicNum}`,
@@ -212,10 +240,14 @@ async function createNewExplanation(info) {
     // Since both the 'standard' and '2x' size seem to be the same size,
     // For legacy explainxkcd sake, divide size by 2
     let sizeString = "";
-    if (largeImageSize &&
-    baseImageSize.width === largeImageSize.width &&
-    baseImageSize.height === largeImageSize.height) {
-      sizeString = `${Math.floor(baseImageSize.width / 2)}x${Math.floor(baseImageSize.height / 2)}px`;
+    if (
+      largeImageSize &&
+      baseImageSize.width === largeImageSize.width &&
+      baseImageSize.height === largeImageSize.height
+    ) {
+      sizeString = `${Math.floor(baseImageSize.width / 2)}x${Math.floor(
+        baseImageSize.height / 2
+      )}px`;
     }
     await bot.edit(
       `${comicNum}: ${comicTitle}`,
@@ -224,10 +256,12 @@ async function createNewExplanation(info) {
       | number    = ${comicNum}
       | date      = ${date}
       | title     = ${comicTitle}
-      ${sizeString === "" ?
-      `| image     = ${imageTitle}.${imageExtension}` :
-      `| image     = ${imageTitle}.${imageExtension}
-      | imagesize = ${sizeString}`}
+      ${
+        sizeString === ""
+          ? `| image     = ${imageTitle}.${imageExtension}`
+          : `| image     = ${imageTitle}.${imageExtension}
+      | imagesize = ${sizeString}`
+      }
       | titletext = ${alt.replace(/\n/g, "<br>")}
       }}
 
@@ -236,12 +270,16 @@ async function createNewExplanation(info) {
 
       ==Transcript==
       {{incomplete transcript|Do NOT delete this tag too soon.}}
-      ${sizeString === "" ? "" : `
+      ${
+        sizeString === ""
+          ? ""
+          : `
       ==Trivia==
       * '''This trivia section was created by a BOT'''
       * The [https://imgs.xkcd.com/comics/${imageTitle}.${imageExtension} standard size] image was uploaded with the same resolution/size as the [https://imgs.xkcd.com/comics/${imageTitle}_2x.${imageExtension} 2x version].
       * This is not the case for many previous comics.
-      `}
+      `
+      }
       {{comic discussion}}
       `,
       EDIT_SUMMARY
@@ -253,7 +291,11 @@ async function createNewExplanation(info) {
       `Talk:${comicNum}: ${comicTitle}`,
       stripIndent`
       <!--Please sign your posts with ~~~~ and don't delete this text. New comments should be added at the bottom.-->
-      ${sizeString === "" ? "" : "The 'standard' and '2x' sized images had the same size, so a Trivia section has been automatically generated, and an imagesize paramter has been added (at half size) to render the image consistently with other comics on this website. --~~~~"}
+      ${
+        sizeString === ""
+          ? ""
+          : "The 'standard' and '2x' sized images had the same size, so a Trivia section has been automatically generated, and an imagesize paramter has been added (at half size) to render the image consistently with other comics on this website. --~~~~"
+      }
       `,
       EDIT_SUMMARY
     );
@@ -269,11 +311,21 @@ async function createNewExplanation(info) {
     // update list of all comics
     log("[INFO] - Updating list of comics");
     const allComicsRead = await bot.read("List of all comics"),
-      allComicsContent = allComicsRead.query.pages[REVISIONS_PAGE_ID].revisions[0]["*"].split("\n"); // .slots.main["*"].split("\n");
+      allComicsContent =
+        allComicsRead.query.pages[REVISIONS_PAGE_ID].revisions[0]["*"].split(
+          "\n"
+        ); // .slots.main["*"].split("\n");
     for (let i = 0; i < allComicsContent.length; i++) {
       if (allComicsContent[i] === "!Date<onlyinclude>") {
-        const isoDate = (new Date(date)).toISOString().slice(0, 10);
-        allComicsContent.splice(i + 1, 0, `{{comicsrow|${comicNum}|${isoDate}|${comicTitle}|${imageTitle.replace(/_/g, " ")}.${imageExtension}}}`);
+        const isoDate = new Date(date).toISOString().slice(0, 10);
+        allComicsContent.splice(
+          i + 1,
+          0,
+          `{{comicsrow|${comicNum}|${isoDate}|${comicTitle}|${imageTitle.replace(
+            /_/g,
+            " "
+          )}.${imageExtension}}}`
+        );
         break;
       }
     }
@@ -293,7 +345,7 @@ async function createNewExplanation(info) {
         "https://explainxkcd.com",
         `https://xkcd.com/${comicNum}`,
         `https://explainxkcd.com/${comicNum - 1}`,
-        `https://explainxkcd.com/${comicNum}`
+        `https://explainxkcd.com/${comicNum}`,
       ];
       for (const url of urls) {
         await got(`https://web.archive.org/save/${url}`);
@@ -302,7 +354,9 @@ async function createNewExplanation(info) {
       /* Ignored */
     }
   } catch (err) {
-    console.error("[ERR] - Failed to create explanation. See below for details:");
+    console.error(
+      "[ERR] - Failed to create explanation. See below for details:"
+    );
     console.error(err);
     setTimeout(updateWiki, getInterval() * 2);
   }

@@ -32,6 +32,7 @@
     "mwbot": "^2.0.0"
   },
   "devDependencies": {
-    "eslint": "^8.8.0"
+    "eslint": "^8.8.0",
+    "prettier": "^2.7.1"
   }
 }
