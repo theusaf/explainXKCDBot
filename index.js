@@ -151,16 +151,20 @@ async function updateWiki() {
         .catch(() => null),
       baseImageSize = sizeOf(baseImage),
       largeImageSize = largeImage ? sizeOf(largeImage) : null,
-      imageTitle = comicData.img.match(/(?<=\/comics\/).*?(?=\.[a-z]+$)/)[0];
+      imageTitle =
+        comicData.img.match(/(?<=\/comics\/).*?(?=\.[a-z]+$)/)[0] + largeImage
+          ? "_2x"
+          : "";
 
     createNewExplanation({
       date,
-      image: baseImage,
+      image: largeImage ?? baseImage,
       comicData,
       imageTitle,
       imageExtension,
       baseImageSize,
       largeImageSize,
+      is2x: (largeImage ?? baseImage) === largeImage,
     });
   } catch (err) {
     console.error(
@@ -184,6 +188,7 @@ async function createNewExplanation(info) {
         date,
         baseImageSize,
         largeImageSize,
+        is2x,
       } = info,
       { safe_title: comicTitle, alt, num: comicNum } = comicData,
       imagePath = path.join(TMP_PATH, `${imageTitle}.${imageExtension}`);
@@ -202,9 +207,13 @@ async function createNewExplanation(info) {
       imagePath,
       stripIndent`
       == Summary ==
-      Large size can be found at ${
-        comicData.img.match(/.*?(?=\.[a-z]+$)/)[0]
-      }_2x.${imageExtension}
+      ${
+        is2x
+          ? `Small size can be found at ${
+              comicData.img.match(/.*?(?=\.[a-z]+$)/)[0]
+            }.${imageExtension}`
+          : ""
+      }
 
       == Licensing ==
       {{XKCD file}}
@@ -215,8 +224,6 @@ async function createNewExplanation(info) {
     log("[INFO] - Creating redirects");
 
     // If the comic title is a number underneath the current comic number, do not create this redirect
-    // TODO: Theoretically, this issue could allow Randall to edit non-comic pages using the title of
-    // his comics... A better solution should be created
     if (!/^\d+$/.test(comicTitle) || +comicTitle > comicNum) {
       await bot.edit(
         comicTitle,
@@ -237,9 +244,8 @@ async function createNewExplanation(info) {
     // create main page
     log("[INFO] - Creating main page");
     // Note 2022-02-03
-    // Since both the 'standard' and '2x' size seem to be the same size,
-    // For legacy explainxkcd sake, divide size by 2
-    let sizeString = "";
+    // If both the 'standard' and '2x' size seem to be the same size
+    let sizeString = `${baseImageSize.width}x${baseImageSize.height}px`;
     if (
       largeImageSize &&
       baseImageSize.width === largeImageSize.width &&
@@ -260,7 +266,8 @@ async function createNewExplanation(info) {
         sizeString === ""
           ? `| image     = ${imageTitle}.${imageExtension}`
           : `| image     = ${imageTitle}.${imageExtension}
-      | imagesize = ${sizeString}`
+      | imagesize = ${sizeString}
+      | noexpand  = true`
       }
       | titletext = ${alt.replace(/\n/g, "<br>")}
       }}
