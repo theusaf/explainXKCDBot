@@ -190,7 +190,7 @@ async function createNewExplanation(info) {
         largeImageSize,
         is2x,
       } = info,
-      { safe_title: comicTitle, alt, num: comicNum } = comicData,
+      { safe_title: comicTitle, alt, num: comicNum, transcript } = comicData,
       imagePath = path.join(TMP_PATH, `${imageTitle}.${imageExtension}`);
 
     // Refresh the edit token to edit/create pages
@@ -277,15 +277,17 @@ async function createNewExplanation(info) {
 
       ==Transcript==
       {{incomplete transcript|Do NOT delete this tag too soon.}}
-      ${
-        sizeString === ""
-          ? ""
-          : `
+      ${transcript ? transcript + "\n" : ""}${
+        largeImageSize &&
+        baseImageSize.width === largeImageSize.width &&
+        baseImageSize.height === largeImageSize.height
+          ? `
       ==Trivia==
       * '''This trivia section was created by a BOT'''
       * The [https://imgs.xkcd.com/comics/${imageTitle}.${imageExtension} standard size] image was uploaded with the same resolution/size as the [https://imgs.xkcd.com/comics/${imageTitle}_2x.${imageExtension} 2x version].
       * This is not the case for many previous comics.
       `
+          : ""
       }
       {{comic discussion}}
       `,
@@ -299,9 +301,11 @@ async function createNewExplanation(info) {
       stripIndent`
       <!--Please sign your posts with ~~~~ and don't delete this text. New comments should be added at the bottom.-->
       ${
-        sizeString === ""
-          ? ""
-          : "The 'standard' and '2x' sized images had the same size, so a Trivia section has been automatically generated, and an imagesize paramter has been added (at half size) to render the image consistently with other comics on this website. --~~~~"
+        largeImageSize &&
+        baseImageSize.width === largeImageSize.width &&
+        baseImageSize.height === largeImageSize.height
+          ? "The 'standard' and '2x' sized images had the same size, so a Trivia section has been automatically generated, and an imagesize paramter has been added (at half size) to render the image consistently with other comics on this website. --~~~~"
+          : ""
       }
       `,
       EDIT_SUMMARY
