@@ -152,9 +152,8 @@ async function updateWiki() {
       baseImageSize = sizeOf(baseImage),
       largeImageSize = largeImage ? sizeOf(largeImage) : null,
       imageTitle =
-        comicData.img.match(/(?<=\/comics\/).*?(?=\.[a-z]+$)/)[0] + largeImage
-          ? "_2x"
-          : "";
+        comicData.img.match(/(?<=\/comics\/).*?(?=\.[a-z]+$)/)[0] +
+        (largeImage ? "_2x" : "");
 
     createNewExplanation({
       date,

@@ -1,6 +1,6 @@
 {
   "name": "explainxkcdbot",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "a bot for explainxkcd",
   "main": "index.js",
   "type": "module",
