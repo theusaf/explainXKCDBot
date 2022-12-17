@@ -174,6 +174,18 @@ async function updateWiki() {
   }
 }
 
+async function isInteractiveComic(number) {
+  try {
+    const { body } = await got(
+      `https://xkcd.com/${number}`,
+      REQUEST_OPTION,
+    );
+    return /<script src=".*?\/\d+\/[\/\w\d\s\-_]+?\.js/.test(body);
+  } catch(err) {
+    return false;
+  }
+}
+
 /**
  * createNewExplanation - Creates and updates the various pages
  */
@@ -190,20 +202,17 @@ async function createNewExplanation(info) {
         is2x,
       } = info,
       { safe_title: comicTitle, alt, num: comicNum, transcript } = comicData,
-      imagePath = path.join(TMP_PATH, `${imageTitle}.${imageExtension}`);
+      isInteractiveComic = await isInteractiveComic(comicNum);
 
     // Refresh the edit token to edit/create pages
     bot.editToken = null;
     await bot.getEditToken();
 
-    // write image to file system, because the lib doesn't take Buffers...
-    fs.writeFileSync(imagePath, image);
-
     // upload the image
     log("[INFO] - Uploading image to explainxkcd");
     await bot.upload(
       `${imageTitle}.${imageExtension}`,
-      imagePath,
+      image,
       stripIndent`
       == Summary ==
       ${
@@ -269,7 +278,11 @@ async function createNewExplanation(info) {
       | noexpand  = true`
       }
       | titletext = ${alt.replace(/\n/g, "<br>")}
-      }}
+      }}${
+        isInteractiveComic ? stripIndent`
+          * To experience the interactivity, visit the [https://xkcd.com/${comicNum}/ original comic].
+          ` : ""
+      }
 
       ==Explanation==
       {{incomplete|Created by a BOT - Please change this comment when editing this page. Do NOT delete this tag too soon.}}
@@ -288,7 +301,11 @@ async function createNewExplanation(info) {
       `
           : ""
       }
-      {{comic discussion}}
+      {{comic discussion}}${
+        isInteractiveComic ? stripIndent`
+          [[Category:Interactive comics]]
+          ` : ""
+      }
       `,
       EDIT_SUMMARY
     );
