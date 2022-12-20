@@ -202,7 +202,7 @@ async function createNewExplanation(info) {
         is2x,
       } = info,
       { safe_title: comicTitle, alt, num: comicNum, transcript } = comicData,
-      isInteractiveComic = await isInteractiveComic(comicNum);
+      isInteractiveComicResult = await isInteractiveComic(comicNum);
 
     // Refresh the edit token to edit/create pages
     bot.editToken = null;
@@ -279,7 +279,7 @@ async function createNewExplanation(info) {
       }
       | titletext = ${alt.replace(/\n/g, "<br>")}
       }}${
-        isInteractiveComic ? stripIndent`
+        isInteractiveComicResult ? stripIndent`
           * To experience the interactivity, visit the [https://xkcd.com/${comicNum}/ original comic].
           ` : ""
       }
@@ -302,7 +302,7 @@ async function createNewExplanation(info) {
           : ""
       }
       {{comic discussion}}${
-        isInteractiveComic ? stripIndent`
+        isInteractiveComicResult ? stripIndent`
           [[Category:Interactive comics]]
           ` : ""
       }
