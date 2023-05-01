@@ -27,12 +27,12 @@
   "homepage": "https://github.com/theusaf/explainXKCDBot#readme",
   "dependencies": {
     "common-tags": "^1.8.2",
-    "got": "^12.5.3",
+    "got": "^12.6.0",
     "image-size": "^1.0.2",
     "mwbot": "github:theusaf/mwbot"
   },
   "devDependencies": {
-    "eslint": "^8.30.0",
-    "prettier": "^2.8.1"
+    "eslint": "^8.39.0",
+    "prettier": "^2.8.8"
   }
 }
