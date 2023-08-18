@@ -1,5 +1,5 @@
 node_modules
 tmp
-test.js
+test*.js
 run.sh
 *-lock.*
