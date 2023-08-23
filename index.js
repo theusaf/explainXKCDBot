@@ -331,7 +331,7 @@ async function createNewExplanation(info) {
     log("[INFO] - Updating latest comic");
     await bot.edit(
       "Template:LATESTCOMIC",
-      `<noinclude>The latest [[xkcd]] comic is number:</noinclude> ${comicNum}`,
+      `<noinclude>The latest [[xkcd]] comic is number: </noinclude>${comicNum}`,
       CHANGE_SUMMARY
     );
 
