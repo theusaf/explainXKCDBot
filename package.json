@@ -30,10 +30,10 @@
     "got": "^13.0.0",
     "image-size": "^1.0.2",
     "mwbot": "github:theusaf/mwbot",
-    "openai": "^4.0.0"
+    "openai": "^4.10.0"
   },
   "devDependencies": {
-    "eslint": "^8.47.0",
-    "prettier": "^3.0.2"
+    "eslint": "^8.50.0",
+    "prettier": "^3.0.3"
   }
 }
