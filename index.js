@@ -1,15 +1,9 @@
 import MediaWikiBot from "mwbot";
 import got from "got";
-import fs from "fs";
-import path from "path";
 import sizeOf from "image-size";
 import { stripIndent } from "common-tags";
-import { fileURLToPath } from "url";
-import { dirname } from "path";
 
-const __dirname = dirname(fileURLToPath(import.meta.url)),
-  [, , username, password] = process.argv,
-  TMP_PATH = path.join(__dirname, "tmp"),
+const [, , username, password] = process.argv,
   API_URL = "https://explainxkcd.com/wiki/api.php",
   USER_AGENT =
     "Netscape Navigator/4.0 (Apple IIGS; 1024x1; x64) Pentium 4 (JavaScript, with Ad Blockers) Boat mode, HIGH-HEAT DRYING DISABLED, explainxkcdBot",
@@ -44,10 +38,6 @@ const __dirname = dirname(fileURLToPath(import.meta.url)),
     username,
     password,
   };
-
-if (!fs.statSync(TMP_PATH, { throwIfNoEntry: false })) {
-  fs.mkdirSync(TMP_PATH);
-}
 
 let expectedComicNumber = null,
   loginTimestamp = 0,
