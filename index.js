@@ -297,7 +297,7 @@ async function createNewExplanation(info) {
         /_2x$/,
         "",
       )}.${imageExtension} standard size] image was uploaded with the same resolution/size as the [https://imgs.xkcd.com/comics/${imageTitle}_2x.${imageExtension} 2x version].
-      * This is not the case for many previous comics.
+      * This may have been an error.
       `
           : isSmallImageLarger
           ? `
