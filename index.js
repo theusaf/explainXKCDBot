@@ -241,21 +241,21 @@ async function createNewExplanation(info) {
     let sizeString = `${baseImageSize.width}x${baseImageSize.height}px`;
     // Note 2022-02-03
     // If both the 'standard' and '2x' size seem to be the same size
-    if (
+    const isSameSize =
       largeImageSize &&
       baseImageSize.width === largeImageSize.width &&
-      baseImageSize.height === largeImageSize.height
-    ) {
+      baseImageSize.height === largeImageSize.height;
+    if (isSameSize) {
       sizeString = `${Math.floor(baseImageSize.width / 2)}x${Math.floor(
         baseImageSize.height / 2,
       )}px`;
     }
     // If the base image size is larger than the large image size, use the large image size / 2
-    if (
+    const isSmallImageLarger =
       largeImageSize &&
       baseImageSize.width > largeImageSize.width &&
-      baseImageSize.height > largeImageSize.height
-    ) {
+      baseImageSize.height > largeImageSize.height;
+    if (isSmallImageLarger) {
       sizeString = `${Math.floor(largeImageSize.width / 2)}x${Math.floor(
         largeImageSize.height / 2,
       )}px`;
@@ -289,22 +289,24 @@ async function createNewExplanation(info) {
       ==Transcript==
       {{incomplete transcript|Do NOT delete this tag too soon.}}
       ${transcript ? transcript + "\n" : ""}${
-        largeImageSize &&
-        baseImageSize.width === largeImageSize.width &&
-        baseImageSize.height === largeImageSize.height
+        isSameSize
           ? `
       ==Trivia==
       * '''This trivia section was created by a BOT'''
-      * The [https://imgs.xkcd.com/comics/${imageTitle}.${imageExtension} standard size] image was uploaded with the same resolution/size as the [https://imgs.xkcd.com/comics/${imageTitle}_2x.${imageExtension} 2x version].
+      * The [https://imgs.xkcd.com/comics/${imageTitle.replace(
+        /_2x$/,
+        "",
+      )}.${imageExtension} standard size] image was uploaded with the same resolution/size as the [https://imgs.xkcd.com/comics/${imageTitle}_2x.${imageExtension} 2x version].
       * This is not the case for many previous comics.
       `
-          : largeImageSize &&
-            baseImageSize.width > largeImageSize.width &&
-            baseImageSize.height > largeImageSize.height
+          : isSmallImageLarger
           ? `
       ==Trivia==
       * '''This trivia section was created by a BOT'''
-      * The [https://imgs.xkcd.com/comics/${imageTitle}.${imageExtension} standard size] image was uploaded with a resolution/size larger than the supposed 2x version.
+      * The [https://imgs.xkcd.com/comics/${imageTitle.replace(
+        /_2x$/,
+        "",
+      )}.${imageExtension} standard size] image was uploaded with a resolution/size larger than the supposed 2x version.
       * This may have been an error.
       `
           : ""
@@ -327,11 +329,7 @@ async function createNewExplanation(info) {
       stripIndent`
       <!--Please sign your posts with ~~~~ and don't delete this text. New comments should be added at the bottom.-->
       ${
-        largeImageSize &&
-        ((baseImageSize.width === largeImageSize.width &&
-          baseImageSize.height === largeImageSize.height) ||
-          (baseImageSize.width > largeImageSize.width &&
-            baseImageSize.height > largeImageSize.height))
+        isSameSize || isSmallImageLarger
           ? "The 'standard' and '2x' sized images had unexpected sizes, so a Trivia section has been automatically generated, and an imagesize paramter has been added (at half size) to render the image consistently with other comics on this website. --~~~~"
           : ""
       }
@@ -344,7 +342,7 @@ async function createNewExplanation(info) {
     await bot.edit(
       "Template:LATESTCOMIC",
       `<noinclude>The latest [[xkcd]] comic is number: </noinclude>${comicNum}`,
-      CHANGE_SUMMARY
+      CHANGE_SUMMARY,
     );
 
     // update list of all comics
