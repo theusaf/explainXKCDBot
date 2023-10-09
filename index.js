@@ -330,7 +330,7 @@ async function createNewExplanation(info) {
       <!--Please sign your posts with ~~~~ and don't delete this text. New comments should be added at the bottom.-->
       ${
         isSameSize || isSmallImageLarger
-          ? "The 'standard' and '2x' sized images had unexpected sizes, so a Trivia section has been automatically generated, and an imagesize paramter has been added (at half size) to render the image consistently with other comics on this website. --~~~~"
+          ? "The 'standard' and '2x' sized images had unexpected sizes, so a Trivia section has been automatically generated, and an imagesize parameter has been added (at half size) to render the image consistently with other comics on this website. --~~~~"
           : ""
       }
       `,
