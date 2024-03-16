@@ -223,8 +223,8 @@ async function createNewExplanation(info) {
       const comicTitleRedirect = `#REDIRECT [[${comicNum}: ${comicTitle}]]\n`;
       await bot.edit(
         comicTitle,
-        content,
-        EDIT_SUMMARY + comicTitleRedirect,
+        comicTitleRedirect,
+        `${EDIT_SUMMARY}${comicTitleRedirect}`,
       );
     } else {
       log(
