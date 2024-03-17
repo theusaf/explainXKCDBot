@@ -235,7 +235,7 @@ async function createNewExplanation(info) {
     await bot.edit(
       `${comicNum}`,
       comicNumRedirect,
-      EDIT_SUMMARY + comicNumRedirect,
+      `${EDIT_SUMMARY}${comicNumRedirect}`,
     );
 
     // create main page
@@ -321,7 +321,7 @@ async function createNewExplanation(info) {
           : ""
       }
       `,
-      EDIT_SUMMARY + comicNum,
+      `${EDIT_SUMMARY}${comicNum}`,
     );
 
     // create talk page
@@ -336,7 +336,7 @@ async function createNewExplanation(info) {
           : ""
       }
       `,
-      EDIT_SUMMARY + " talk page for " + comicNum,
+      `${EDIT_SUMMARY} talk page for ${comicNum}`,
     );
 
     // update latest comic
@@ -344,7 +344,7 @@ async function createNewExplanation(info) {
     await bot.edit(
       "Template:LATESTCOMIC",
       `<noinclude>The latest [[xkcd]] comic is number: </noinclude>${comicNum}`,
-      CHANGE_SUMMARY + comicNum,
+      `${CHANGE_SUMMARY}${comicNum}`,
     );
 
     // update list of all comics
@@ -371,7 +371,7 @@ async function createNewExplanation(info) {
     await bot.edit(
       "List of all comics",
       allComicsContent.join("\n"),
-      CHANGE_SUMMARY + allComicsContent.length,
+      `${CHANGE_SUMMARY}${allComicsContent.length}`,
     );
 
     dateChecked = new Date();
