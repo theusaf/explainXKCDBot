@@ -31,8 +31,8 @@ const [, , username, password] = process.argv,
       "User-Agent": USER_AGENT,
     },
   },
-  EDIT_SUMMARY = "Created by theusafBOT",
-  CHANGE_SUMMARY = "Changed by theusafBOT",
+  EDIT_SUMMARY = "Created by theusafBOT: ",
+  CHANGE_SUMMARY = "Changed by theusafBOT: ",
   LOGIN_DATA = {
     apiUrl: API_URL,
     username,
@@ -220,20 +220,22 @@ async function createNewExplanation(info) {
 
     // If the comic title is a number underneath the current comic number, do not create this redirect
     if (!/^\d+$/.test(comicTitle) || +comicTitle > comicNum) {
+      const comicTitleRedirect = `#REDIRECT [[${comicNum}: ${comicTitle}]]\n`;
       await bot.edit(
         comicTitle,
-        `#REDIRECT [[${comicNum}: ${comicTitle}]]\n`,
-        EDIT_SUMMARY,
+        comicTitleRedirect,
+        `${EDIT_SUMMARY}${comicTitleRedirect}`,
       );
     } else {
       log(
         `[WARN] - Skipped creation of '${comicTitle}' due to lower numerical title`,
       );
     }
+    const comicNumRedirect = `#REDIRECT [[${comicNum}: ${comicTitle}]]\n`;
     await bot.edit(
       `${comicNum}`,
-      `#REDIRECT [[${comicNum}: ${comicTitle}]]\n`,
-      EDIT_SUMMARY,
+      comicNumRedirect,
+      `${EDIT_SUMMARY}${comicNumRedirect}`,
     );
 
     // create main page
@@ -319,7 +321,7 @@ async function createNewExplanation(info) {
           : ""
       }
       `,
-      EDIT_SUMMARY,
+      `${EDIT_SUMMARY}${comicNum}`,
     );
 
     // create talk page
@@ -334,7 +336,7 @@ async function createNewExplanation(info) {
           : ""
       }
       `,
-      EDIT_SUMMARY,
+      `${EDIT_SUMMARY} talk page for ${comicNum}`,
     );
 
     // update latest comic
@@ -342,7 +344,7 @@ async function createNewExplanation(info) {
     await bot.edit(
       "Template:LATESTCOMIC",
       `<noinclude>The latest [[xkcd]] comic is number: </noinclude>${comicNum}`,
-      CHANGE_SUMMARY,
+      `${CHANGE_SUMMARY}${comicNum}`,
     );
 
     // update list of all comics
@@ -369,7 +371,7 @@ async function createNewExplanation(info) {
     await bot.edit(
       "List of all comics",
       allComicsContent.join("\n"),
-      CHANGE_SUMMARY,
+      `${CHANGE_SUMMARY}${allComicsContent.length}`,
     );
 
     dateChecked = new Date();
