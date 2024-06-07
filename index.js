@@ -290,29 +290,7 @@ async function createNewExplanation(info) {
 
       ==Transcript==
       {{incomplete transcript|Do NOT delete this tag too soon.}}
-      ${transcript ? transcript + "\n" : ""}${
-        isSameSize
-          ? `
-      ==Trivia==
-      * '''This trivia section was created by a BOT'''
-      * The [https://imgs.xkcd.com/comics/${imageTitle.replace(
-        /_2x$/,
-        "",
-      )}.${imageExtension} standard size] image was uploaded with the same resolution/size as the [https://imgs.xkcd.com/comics/${imageTitle}_2x.${imageExtension} 2x version].
-      * This may have been an error.
-      `
-          : isSmallImageLarger
-          ? `
-      ==Trivia==
-      * '''This trivia section was created by a BOT'''
-      * The [https://imgs.xkcd.com/comics/${imageTitle.replace(
-        /_2x$/,
-        "",
-      )}.${imageExtension} standard size] image was uploaded with a resolution/size larger than the supposed 2x version.
-      * This may have been an error.
-      `
-          : ""
-      }
+      ${transcript ? transcript + "\n" : ""}
       {{comic discussion}}${
         isInteractiveComicResult
           ? stripIndent`
@@ -332,7 +310,10 @@ async function createNewExplanation(info) {
       <!--Please sign your posts with ~~~~ and don't delete this text. New comments should be added at the bottom.-->
       ${
         isSameSize || isSmallImageLarger
-          ? "The 'standard' and '2x' sized images had unexpected sizes, so a Trivia section has been automatically generated, and an imagesize parameter has been added (at half size) to render the image consistently with other comics on this website. --~~~~"
+          ? `The 'standard' and '2x' sized images had unexpected sizes, so an imagesize parameter has been added to render the image consistently with other comics on this website. See the web [https://web.archive.org/web/*/${imageTitle.replace(
+              /_2x$/,
+              "",
+            )}.${imageExtension} archive] for more details. --~~~~`
           : ""
       }
       `,

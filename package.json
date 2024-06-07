@@ -1,6 +1,6 @@
 {
   "name": "explainxkcdbot",
-  "version": "2.2.0",
+  "version": "2.3.0",
   "description": "a bot for explainxkcd",
   "main": "index.js",
   "type": "module",
@@ -27,13 +27,13 @@
   "homepage": "https://github.com/theusaf/explainXKCDBot#readme",
   "dependencies": {
     "common-tags": "^1.8.2",
-    "got": "^13.0.0",
-    "image-size": "^1.0.2",
+    "got": "^14.4.1",
+    "image-size": "^1.1.1",
     "mwbot": "github:theusaf/mwbot",
-    "openai": "^4.11.1"
+    "openai": "^4.49.0"
   },
   "devDependencies": {
-    "eslint": "^8.51.0",
-    "prettier": "^3.0.3"
+    "eslint": "^9.4.0",
+    "prettier": "^3.3.1"
   }
 }
