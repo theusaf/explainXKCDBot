@@ -193,11 +193,13 @@ async function createNewExplanation(info) {
 		} = info;
 		const {
 			safe_title: comicTitle,
+			title: alternateTitle,
 			alt,
 			num: comicNum,
 			transcript,
 		} = comicData;
 		const isInteractiveComicResult = await isInteractiveComic(comicNum);
+		const title = alternateTitle.includes("&") ? alternateTitle : comicTitle;
 
 		// Refresh the edit token to edit/create pages
 		bot.editToken = null;
@@ -227,19 +229,19 @@ async function createNewExplanation(info) {
 		log("[INFO] - Creating redirects");
 
 		// If the comic title is a number underneath the current comic number, do not create this redirect
-		if (!/^\d+$/.test(comicTitle) || +comicTitle > comicNum) {
-			const comicTitleRedirect = `#REDIRECT [[${comicNum}: ${comicTitle}]]\n`;
+		if (!/^\d+$/.test(title) || +title > comicNum) {
+			const comicTitleRedirect = `#REDIRECT [[${comicNum}: ${title}]]\n`;
 			await bot.edit(
-				comicTitle,
+				title,
 				comicTitleRedirect,
 				`${EDIT_SUMMARY}${comicTitleRedirect}`,
 			);
 		} else {
 			log(
-				`[WARN] - Skipped creation of '${comicTitle}' due to lower numerical title`,
+				`[WARN] - Skipped creation of '${title}' due to lower numerical title`,
 			);
 		}
-		const comicNumRedirect = `#REDIRECT [[${comicNum}: ${comicTitle}]]\n`;
+		const comicNumRedirect = `#REDIRECT [[${comicNum}: ${title}]]\n`;
 		await bot.edit(
 			`${comicNum}`,
 			comicNumRedirect,
@@ -271,12 +273,12 @@ async function createNewExplanation(info) {
 			)}px`;
 		}
 		await bot.edit(
-			`${comicNum}: ${comicTitle}`,
+			`${comicNum}: ${title}`,
 			stripIndent`
       {{comic
       | number    = ${comicNum}
       | date      = ${date}
-      | title     = ${comicTitle}
+      | title     = ${title}
       ${
 				sizeString === ""
 					? `| image     = ${imageTitle}.${imageExtension}`
@@ -313,7 +315,7 @@ async function createNewExplanation(info) {
 		// create talk page
 		log("[INFO] - Creating talk page");
 		await bot.edit(
-			`Talk:${comicNum}: ${comicTitle}`,
+			`Talk:${comicNum}: ${title}`,
 			stripIndent`
       <!--Please sign your posts with ~~~~ and don't delete this text. New comments should be added at the bottom.-->
       ${
@@ -349,7 +351,7 @@ async function createNewExplanation(info) {
 				allComicsContent.splice(
 					i + 1,
 					0,
-					`{{comicsrow|${comicNum}|${isoDate}|${comicTitle}|${imageTitle.replace(
+					`{{comicsrow|${comicNum}|${isoDate}|${title}|${imageTitle.replace(
 						/_/g,
 						" ",
 					)}.${imageExtension}}}`,
