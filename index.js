@@ -290,16 +290,16 @@ async function createNewExplanation(info) {
       }}${
 				isInteractiveComicResult
 					? stripIndent`
-          * To experience the interactivity, visit the [https://xkcd.com/${comicNum}/ original comic].
+          To experience the interactivity, visit the [https://xkcd.com/${comicNum}/ original comic].
           `
 					: ""
 			}
 
       ==Explanation==
-      {{incomplete|Created by a BOT - Please change this comment when editing this page. Do NOT delete this tag too soon.}}
+      {{incomplete|This page was created recently. Don't remove this notice too soon.}}
 
       ==Transcript==
-      {{incomplete transcript|Do NOT delete this tag too soon.}}
+      {{incomplete transcript|Don't remove this notice too soon.}}
       ${transcript ? `${transcript}\n` : ""}
       {{comic discussion}}${
 				isInteractiveComicResult
@@ -317,7 +317,7 @@ async function createNewExplanation(info) {
 		await bot.edit(
 			`Talk:${comicNum}: ${title}`,
 			stripIndent`
-      <!--Please sign your posts with ~~~~ and don't delete this text. New comments should be added at the bottom.-->
+      <!-- Please sign your posts with ~~~~ and don't delete this text. New comments should be added at the bottom. -->
       ${
 				isSameSize || isSmallImageLarger
 					? `The 'standard' and '2x' sized images had unexpected sizes, so an imagesize parameter has been added to render the image consistently with other comics on this website. See the web [https://web.archive.org/web/*/${imageTitle.replace(
