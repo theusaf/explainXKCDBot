@@ -290,7 +290,7 @@ async function createNewExplanation(info) {
       }}${
 				isInteractiveComicResult
 					? stripIndent`
-          To experience the interactivity, visit the [https://xkcd.com/${comicNum}/ original comic].
+          To experience the interactivity of the game, visit the {{xkcd|{comicNum}|original comic}}!
           `
 					: ""
 			}
@@ -301,10 +301,10 @@ async function createNewExplanation(info) {
       ==Transcript==
       {{incomplete transcript|Don't remove this notice too soon.}}
       ${transcript ? `${transcript}\n` : ""}
-      {{comic discussion}}${
+      {{comic discussion}}<noinclude>${
 				isInteractiveComicResult
 					? stripIndent`
-          [[Category:Interactive comics]]
+          [[Category:Interactive comics]][[Category:Dynamic comics]]
           `
 					: ""
 			}
@@ -334,7 +334,7 @@ async function createNewExplanation(info) {
 		log("[INFO] - Updating latest comic");
 		await bot.edit(
 			"Template:LATESTCOMIC",
-			`<noinclude>The latest [[xkcd]] comic is number: </noinclude>${comicNum}`,
+			`<noinclude>[[Category:Templates]]This template is used by many other [[:Category:Templates|templates]] to link to the most recent comic. The latest [[xkcd]] comic is: </noinclude>${comicNum}`,
 			`${CHANGE_SUMMARY}${comicNum}`,
 		);
 
