@@ -3,3 +3,4 @@ tmp
 test*.js
 run.sh
 *-lock.*
+pnpm-workspace.yaml

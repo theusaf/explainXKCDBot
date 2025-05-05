@@ -1,7 +1,7 @@
-import MediaWikiBot from "mwbot";
-import got from "got";
-import sizeOf from "image-size";
 import { stripIndent } from "common-tags";
+import got from "got";
+import { imageSize } from "image-size";
+import MediaWikiBot from "mwbot";
 
 function getFirstItem(object) {
 	return object[Object.keys(object)[0]];
@@ -142,8 +142,8 @@ async function updateWiki() {
 		)
 			.buffer()
 			.catch(() => null);
-		const baseImageSize = sizeOf(baseImage);
-		const largeImageSize = largeImage ? sizeOf(largeImage) : null;
+		const baseImageSize = imageSize(baseImage);
+		const largeImageSize = largeImage ? imageSize(largeImage) : null;
 		const imageTitle =
 			comicData.img.match(/(?<=\/comics\/).*?(?=\.[a-z]+$)/)[0] +
 			(largeImage ? "_2x" : "");
