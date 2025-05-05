@@ -290,7 +290,7 @@ async function createNewExplanation(info) {
       }}${
 				isInteractiveComicResult
 					? stripIndent`
-          To experience the interactivity of the game, visit the {{xkcd|{comicNum}|original comic}}!
+          To experience the interactivity, visit the {{xkcd|{comicNum}|original comic}}!
           `
 					: ""
 			}
