@@ -222,6 +222,8 @@ async function createNewExplanation(info) {
 
       == Licensing ==
       {{XKCD file}}
+
+			[[Category:Comic images]]
       `,
 		);
 

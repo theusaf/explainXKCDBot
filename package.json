@@ -1,6 +1,6 @@
 {
 	"name": "explainxkcdbot",
-	"version": "2.3.0",
+	"version": "2.4.0",
 	"description": "a bot for explainxkcd",
 	"main": "index.js",
 	"type": "module",
@@ -14,7 +14,11 @@
 		"type": "git",
 		"url": "git+https://github.com/theusaf/explainXKCDBot.git"
 	},
-	"keywords": ["xkcd", "explainxkcd", "bot"],
+	"keywords": [
+		"xkcd",
+		"explainxkcd",
+		"bot"
+	],
 	"author": "theusaf",
 	"license": "MIT",
 	"bugs": {
@@ -23,12 +27,11 @@
 	"homepage": "https://github.com/theusaf/explainXKCDBot#readme",
 	"dependencies": {
 		"common-tags": "^1.8.2",
-		"got": "^14.4.1",
+		"got": "^14.6.5",
 		"image-size": "^2.0.2",
-		"mwbot": "github:theusaf/mwbot",
-		"openai": "^4.49.0"
+		"mwbot": "github:theusaf/mwbot"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "^1.9.4"
+		"@biomejs/biome": "^2.3.7"
 	}
 }
