@@ -211,8 +211,8 @@ async function createNewExplanation(info) {
 			`${imageTitle}.${imageExtension}`,
 			image,
 			stripIndent`
-      == Summary ==
-      ${
+			== Summary ==
+			${
 				is2x
 					? `Small size can be found at ${
 							comicData.img.match(/.*?(?=\.[a-z]+$)/)[0]
@@ -220,11 +220,11 @@ async function createNewExplanation(info) {
 					: ""
 			}
 
-      == Licensing ==
-      {{XKCD file}}
+			== Licensing ==
+			{{XKCD file}}
 
 			[[Category:Comic images]]
-      `,
+			`,
 		);
 
 		// create/edit redirects
@@ -277,40 +277,40 @@ async function createNewExplanation(info) {
 		await bot.edit(
 			`${comicNum}: ${title}`,
 			stripIndent`
-      {{comic
-      | number    = ${comicNum}
-      | date      = ${date}
-      | title     = ${title}
-      ${
+			{{comic
+			| number    = ${comicNum}
+			| date      = ${date}
+			| title     = ${title}
+			${
 				sizeString === ""
 					? `| image     = ${imageTitle}.${imageExtension}`
 					: `| image     = ${imageTitle}.${imageExtension}
-      | imagesize = ${sizeString}
-      | noexpand  = true`
+			| imagesize = ${sizeString}
+			| noexpand  = true`
 			}
-      | titletext = ${alt.replace(/\n/g, "<br>")}
-      }}${
+			| titletext = ${alt.replace(/\n/g, "<br>")}
+			}}${
 				isInteractiveComicResult
 					? stripIndent`
-          To experience the interactivity, visit the {{xkcd|{comicNum}|original comic}}!
-          `
+					To experience the interactivity, visit the {{xkcd|{comicNum}|original comic}}!
+					`
 					: ""
 			}
 
-      ==Explanation==
-      {{incomplete|This page was created recently. Don't remove this notice too soon.}}
+			==Explanation==
+			{{incomplete|This page was created recently. Don't remove this notice too soon.}}
 
-      ==Transcript==
-      {{incomplete transcript|Don't remove this notice too soon.}}
-      ${transcript ? `${transcript}\n` : ""}
-      {{comic discussion}}<noinclude>${
+			==Transcript==
+			{{incomplete transcript|Don't remove this notice too soon.}}
+			${transcript ? `${transcript}\n` : ""}
+			{{comic discussion}}<noinclude>${
 				isInteractiveComicResult
 					? stripIndent`
-          [[Category:Interactive comics]][[Category:Dynamic comics]]
-          `
+					[[Category:Interactive comics]][[Category:Dynamic comics]]
+					`
 					: ""
 			}
-      `,
+			`,
 			`${EDIT_SUMMARY}${comicNum}`,
 		);
 
@@ -319,8 +319,8 @@ async function createNewExplanation(info) {
 		await bot.edit(
 			`Talk:${comicNum}: ${title}`,
 			stripIndent`
-      <!-- Please sign your posts with ~~~~ and don't delete this text. New comments should be added at the bottom. -->
-      ${
+			<!-- Please sign your posts with ~~~~ and don't delete this text. New comments should be added at the bottom. -->
+			${
 				isSameSize || isSmallImageLarger
 					? `The 'standard' and '2x' sized images had unexpected sizes, so an imagesize parameter has been added to render the image consistently with other comics on this website. See the web [https://web.archive.org/web/*/${imageTitle.replace(
 							/_2x$/,
@@ -328,7 +328,7 @@ async function createNewExplanation(info) {
 						)}.${imageExtension} archive] for more details. --~~~~`
 					: ""
 			}
-      `,
+			`,
 			`${EDIT_SUMMARY} talk page for ${comicNum}`,
 		);
 
