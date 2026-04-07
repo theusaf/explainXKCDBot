@@ -170,7 +170,15 @@ async function updateWiki() {
 async function isInteractiveComic(number) {
 	try {
 		const { body } = await got(`https://xkcd.com/${number}`, REQUEST_OPTION);
-		return /<script src=".*?\/\d+\/[\/\w\d\s\-_]+?\.js/.test(body);
+		const scriptRegex = /<script src=".*?\/(\d+)\/[\/\w\d\s\-_]+?\.js"/g;
+		const hasScript = scriptRegex.test(body);
+		// check that the script number matches the comic number (the script could be a site-wide feature)
+		if (hasScript) {
+			const matches = [...body.matchAll(scriptRegex)];
+			return matches.some(match => `${match[1]}` === `${number}`);
+		} else {
+			return false;
+		}
 	} catch (err) {
 		return false;
 	}
