@@ -11,8 +11,8 @@ const [, , username, password] = process.argv;
 const API_URL = "https://explainxkcd.com/wiki/api.php";
 const USER_AGENT =
 	"Netscape Navigator/4.0 (Apple IIGS; 1024x1; x64) Pentium 4 (JavaScript, with Ad Blockers) Boat mode, HIGH-HEAT DRYING DISABLED, explainxkcdBot";
-const CURRENT_COMIC_PAGE_ID = "1923";
-const REVISIONS_PAGE_ID = "27987";
+const CURRENT_COMIC_PAGE_ID = "26124";
+const REVISIONS_PAGE_ID = "8396";
 const CHECK_INTERVAL = 120e3;
 const NOT_EXPECTED_CHECK_INTERVAL = 9e5; // 15 minute intervals on days which are not Monday, Wednesday, Friday
 const MAX_LOGIN_TIME = 6048e5; // 1 week, to be safe
@@ -120,7 +120,7 @@ async function updateWiki() {
 		const currentRevision = (
 			currentWikiTemplate.query.pages[CURRENT_COMIC_PAGE_ID] ??
 			getFirstItem(currentWikiTemplate.query.pages)
-		).revisions[0]["*"];
+		).revisions[0].slots.main["*"];
 		const expectedNumber = +currentRevision.match(/\d+$/)[0] + 1;
 
 		expectedComicNumber = expectedNumber;
@@ -354,7 +354,7 @@ async function createNewExplanation(info) {
 		const allComicsContent = (
 			allComicsRead.query.pages[REVISIONS_PAGE_ID] ??
 			getFirstItem(allComicsRead.query.pages)
-		).revisions[0]["*"].split("\n"); // .slots.main["*"].split("\n");
+		).revisions[0].slots.main["*"].split("\n");
 		for (let i = 0; i < allComicsContent.length; i++) {
 			if (allComicsContent[i] === "!Date<onlyinclude>") {
 				const isoDate = new Date(date).toISOString().slice(0, 10);
