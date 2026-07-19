@@ -8,7 +8,7 @@ function getFirstItem(object) {
 }
 
 const [, , username, password] = process.argv;
-const API_URL = "https://explainxkcd.com/wiki/api.php";
+const API_URL = "https://explainxkcd.com/w/api.php";
 const USER_AGENT =
 	"Netscape Navigator/4.0 (Apple IIGS; 1024x1; x64) Pentium 4 (JavaScript, with Ad Blockers) Boat mode, HIGH-HEAT DRYING DISABLED, explainxkcdBot";
 const CURRENT_COMIC_PAGE_ID = "26124";
